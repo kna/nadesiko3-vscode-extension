@@ -1,0 +1,104 @@
+{
+	"information_about_this_file": [
+		"This file has been converted from https://github.com/kujirahand/nadesiko3/tree/master/misc/atom-packages/language-nako3/grammars"
+	],
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Nadesiko3",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#number"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#comment"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.nadesiko3",
+					"match": "(もし|ならば|なら|違えば|回|繰り返す|ならば|ここまで|ここから|←|→|反復|エラー監視|それ|そう|●)"
+				},
+				{
+					"name": "keyword.operator.nadesiko3",
+					"match": "(?:[＋ー×÷（）\\(\\)＆\\-\\*&<>=＝+!])"
+				},
+				{
+					"name": "punctuation.definition.comment.josi.nadesiko3",
+					"match": "(について|くらい|なのか|までを|とは|までの|から|まで|だけ|より|ほど|など|いて|えて|きて|けて|して|って|にて|には|みて|めて|ねて|では|は|を|に|へ|で|と|が|の)"
+				}
+			]
+		},
+		"number": {
+			"patterns": [
+				{
+					"name": "constant.numeric.integer.nadesiko3",
+					"match": "([1-9][0-9\\.]*)"
+				},
+				{
+					"name": "constant.numeric.hex.nadesiko3",
+					"match": "(0x[0-9]+)"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.single.nadesiko3",
+					"begin": "'",
+					"end": "'"
+				},
+				{
+					"name": "string.quoted.double.nadesiko3",
+					"begin": "\"",
+					"end": "\""
+				},
+				{
+					"name": "string.quoted.double.nadesiko3",
+					"begin": "“",
+					"end": "”"
+				},
+				{
+					"name": "string.quoted.ex.nadesiko3",
+					"begin": "「",
+					"end": "」"
+				},
+				{
+					"name": "string.quoted.raw.nadesiko3",
+					"begin": "『",
+					"end": "』"
+				},
+				{
+					"name": "string.unquoted.ex.nadesiko3",
+					"begin": "(S|文字列)\\{\\{\\{",
+					"end": "\\}\\}\\}"
+				},
+				{
+					"name": "string.unquoted.raw.nadesiko3",
+					"begin": "R\\{\\{\\{",
+					"end": "\\}\\}\\}"
+				}
+			]
+		},
+		"comment": {
+			"patterns": [
+				{
+					"name": "comment.line.number-sign.nadesiko3",
+					"match": "([#＃][^\\n]*)"
+				},
+				{
+					"name": "comment.block.nadesiko3",
+					"begin": "/¥*",
+					"end": "¥*/"
+				}
+			]
+		}
+	},
+	"scopeName": "source.nadesiko3"
+}

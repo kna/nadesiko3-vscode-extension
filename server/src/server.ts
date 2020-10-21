@@ -10,12 +10,14 @@ import {
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
-	CompletionItem,
-	CompletionItemKind,
+//	CompletionItem,
+//	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult
 } from 'vscode-languageserver';
+
+import {compiler} from "nadesiko3";
 
 import {
 	TextDocument
@@ -51,11 +53,12 @@ connection.onInitialize((params: InitializeParams) => {
 
 	const result: InitializeResult = {
 		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
+			textDocumentSync: TextDocumentSyncKind.Incremental
+			//,
 			// Tell the client that this server supports code completion.
-			completionProvider: {
-				resolveProvider: true
-			}
+			//completionProvider: {
+			//	resolveProvider: true
+			//}
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -116,7 +119,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'languageServerExample'
+			section: 'nadesiko3'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -140,40 +143,30 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	// The validator creates diagnostics for all uppercase words length 2 and more
 	let text = textDocument.getText();
-	let pattern = /\b[A-Z]{2,}\b/g;
-	let m: RegExpExecArray | null;
 
-	let problems = 0;
 	let diagnostics: Diagnostic[] = [];
-	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-		problems++;
+
+	var c: any = new compiler();
+	try{
+		var ast: any = c.parse(text)
+	} catch(e){
+		var range = {
+			start: textDocument.positionAt(0),
+			end: textDocument.positionAt(text.length)
+		};
+		const line = getLineNumber(e);
+		if(line != null){ // NakoSyntaxError
+			range = {
+				start: {line: line - 1, character:0},
+				end: {line: line, character:0},
+			}
+		} 
 		let diagnostic: Diagnostic = {
 			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: textDocument.positionAt(m.index),
-				end: textDocument.positionAt(m.index + m[0].length)
-			},
-			message: `${m[0]} is all uppercase.`,
+			range: range,
+			message: `${e}`,
 			source: 'ex'
 		};
-		if (hasDiagnosticRelatedInformationCapability) {
-			diagnostic.relatedInformation = [
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Spelling matters'
-				},
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Particularly for names'
-				}
-			];
-		}
 		diagnostics.push(diagnostic);
 	}
 
@@ -181,46 +174,53 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
+// Parse a messasge of NakoSyntaxError and get the line number
+const regexpLinuNumber = new RegExp('\[文法エラー\][^\\(]*?\\(([0-9]+)行目');
+function getLineNumber(error: Error): number | null {
+	const ret = error.message.match(regexpLinuNumber)
+	return ret == null ? null : parseInt(ret[1]);
+}
+
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
 	connection.console.log('We received an file change event');
 });
 
-// This handler provides the initial list of the completion items.
-connection.onCompletion(
-	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		// The pass parameter contains the position of the text document in
-		// which code complete got requested. For the example we ignore this
-		// info and always provide the same completion items.
-		return [
-			{
-				label: 'TypeScript',
-				kind: CompletionItemKind.Text,
-				data: 1
-			},
-			{
-				label: 'JavaScript',
-				kind: CompletionItemKind.Text,
-				data: 2
-			}
-		];
-	}
-);
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve(
-	(item: CompletionItem): CompletionItem => {
-		if (item.data === 1) {
-			item.detail = 'TypeScript details';
-			item.documentation = 'TypeScript documentation';
-		} else if (item.data === 2) {
-			item.detail = 'JavaScript details';
-			item.documentation = 'JavaScript documentation';
-		}
-		return item;
-	}
-);
+//// This handler provides the initial list of the completion items.
+//connection.onCompletion(
+//	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+//		// The pass parameter contains the position of the text document in
+//		// which code complete got requested. For the example we ignore this
+//		// info and always provide the same completion items.
+//		return [
+//			{
+//				label: 'TypeScript',
+//				kind: CompletionItemKind.Text,
+//				data: 1
+//			},
+//			{
+//				label: 'JavaScript',
+//				kind: CompletionItemKind.Text,
+//				data: 2
+//			}
+//		];
+//	}
+//);
+//
+//// This handler resolves additional information for the item selected in
+//// the completion list.
+//connection.onCompletionResolve(
+//	(item: CompletionItem): CompletionItem => {
+//		if (item.data === 1) {
+//			item.detail = 'TypeScript details';
+//			item.documentation = 'TypeScript documentation';
+//		} else if (item.data === 2) {
+//			item.detail = 'JavaScript details';
+//			item.documentation = 'JavaScript documentation';
+//		}
+//		return item;
+//	}
+//);
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

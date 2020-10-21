@@ -1,23 +1,21 @@
 {
-	"name": "lsp-sample",
-	"description": "A language server example",
-	"author": "Microsoft Corporation",
+	"name": "nadesiko3-vscode-extension",
+	"description": "nadesiko3 vscode extension",
+	"author": "kna",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "0.0.6",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/kna/nadesiko3-vscode-extension"
 	},
-	"publisher": "vscode-samples",
+	"publisher": "kna",
 	"categories": [],
-	"keywords": [
-		"multi-root ready"
-	],
+	"keywords": [],
 	"engines": {
 		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
-		"onLanguage:plaintext"
+		"onLanguage:nadesiko3"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
@@ -25,13 +23,13 @@
 			"type": "object",
 			"title": "Example configuration",
 			"properties": {
-				"languageServerExample.maxNumberOfProblems": {
+				"nadesiko3.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
 					"default": 100,
 					"description": "Controls the maximum number of problems produced by the server."
 				},
-				"languageServerExample.trace.server": {
+				"nadesiko3.trace.server": {
 					"scope": "window",
 					"type": "string",
 					"enum": [
@@ -43,21 +41,48 @@
 					"description": "Traces the communication between VS Code and the language server."
 				}
 			}
-		}
+		},
+		"languages": [
+			{
+				"id": "nadesiko3",
+				"aliases": [
+					"Nadesiko3",
+					"nadesiko3",
+					"nako3"
+				],
+				"extensions": [
+					".nako3"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "nadesiko3",
+				"scopeName": "source.nadesiko3",
+				"path": "./syntaxes/nadesiko3.tmLanguage.json",
+				"embeddedLanguages": {
+					"meta.embedded.javascript": "javascript"
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -b",
+		"package": "vsce package",
 		"watch": "tsc -b -w",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
 		"test": "sh ./scripts/e2e.sh"
 	},
 	"devDependencies": {
 		"@types/mocha": "^8.0.3",
-		"mocha": "^8.1.1",
 		"@types/node": "^12.12.0",
-		"eslint": "^6.4.0",
 		"@typescript-eslint/parser": "^2.3.0",
-		"typescript": "^4.0.2"
-	}
+		"eslint": "^6.4.0",
+		"mocha": "^8.1.1",
+		"typescript": "^4.0.2",
+		"vsce": "^1.81.1"
+	},
+	"dependencies": {}
 }

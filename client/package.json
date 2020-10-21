@@ -1,13 +1,13 @@
 {
-	"name": "lsp-sample-client",
+	"name": "nadesiko3-vscode-extension-client",
 	"description": "VSCode part of a language server",
-	"author": "Microsoft Corporation",
+	"author": "kna",
 	"license": "MIT",
 	"version": "0.0.1",
 	"publisher": "vscode",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/kna/nadesiko3-vscode-extension"
 	},
 	"engines": {
 		"vscode": "^1.43.0"
