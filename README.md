@@ -19,3 +19,6 @@ This is a Visual Studio Code extension for nadesiko3(なでしこ3)
 - In the [Extension Development Host] instance of VSCode, open a document  with ".nako3" extension.
   - Enter text content such as `「こんにちは」を表示`. It will be hilighted. 
   - If the content is invalid, this extension will emit diagnostics.
+
+## demo
+![demo](demo.gif)
